@@ -6,6 +6,9 @@ A Sorani Kurdish letter-building dice game for one human player against the comp
 
 - `wusane_app.py` - Streamlit entry point
 - `ووشانێ.html` - complete HTML, CSS, and JavaScript game
+- `wordlist.txt` - combined source word lists, one entry per line
+- `wordlist.js` - browser-readable version of the combined list
+- `combine_wordlists.py` - regenerates both word-list files
 - `requirements.txt` - Python dependency list
 - `.streamlit/config.toml` - Streamlit theme and server settings
 - `.gitignore` - files Git should ignore
@@ -59,3 +62,16 @@ Do not add API keys or passwords to this repository.
 4. Deploy.
 
 The game runs in the browser. Game state resets when the page is refreshed.
+
+The computer picks random entries from the word list and types them across turns,
+adding spaces and punctuation. The entries can include phrases and can combine
+into nonsensical sentences. The game still ends at 50 selections, so the final
+word can be incomplete.
+
+To rebuild the word lists, place the source text files in
+`../../git/Kurdish-wordlist/` and run `python combine_wordlists.py` from this
+folder. The text file preserves the source lines; the browser version removes
+blank lines and surrounding whitespace. Source entries may repeat.
+
+The source word-list README does not specify a license. Check permission before
+redistributing the word-list files.

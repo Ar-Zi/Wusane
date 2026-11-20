@@ -56,10 +56,102 @@ html,body{margin:0;background:#151a1c;font-family:Tahoma,Arial,sans-serif}
 <body>
 <div id="sg41" dir="rtl">
 <div class="players"><section id="hp" class="panel player active"><h3>مرۆڤ</h3><div id="hw" class="writing"></div></section><section id="cp" class="panel player"><h3>کۆمپیوتەر</h3><div id="cw" class="writing"></div></section></div>
-<div class="bottom"><section class="controls" aria-label="کۆنترۆڵەکانی یاری"><div class="dieWrap"><div id="die" class="die" aria-label="ئەنجامی زار">؟</div></div><div class="buttons"><button type="button" id="new" class="btn new">نوێ</button><button type="button" id="undo" class="btn undo" disabled>دووبارە</button><button type="button" id="roll" class="btn roll">زار</button><button type="button" id="end" class="btn end" disabled>تەواو</button></div></section><aside class="info"><div class="title">ووشانێ</div><div class="scores"><span class="score">مرۆڤ: <b id="hs">0</b>/50</span><span class="score">کۆمپیوتەر: <b id="cs">0</b>/50</span></div><div id="status" class="status" aria-live="polite">نۆرەتە؛ زارەکە هەڵدە.</div></aside></div>
+<div class="bottom"><section class="controls" aria-label="کۆنترۆڵی یاری"><div class="dieWrap"><div id="die" class="die" aria-label="ئەنجامی زار">؟</div></div><div class="buttons"><button type="button" id="new" class="btn new">نوێ</button><button type="button" id="undo" class="btn undo" disabled>دووبارە</button><button type="button" id="roll" class="btn roll">زار</button><button type="button" id="end" class="btn end" disabled>تەواو</button></div></section><aside class="info"><div class="title">ووشانێ</div><div class="scores"><span class="score">مرۆڤ: <b id="hs">0</b>/50</span><span class="score">کۆمپیوتەر: <b id="cs">0</b>/50</span></div><div id="status" class="status" aria-live="polite">نۆرەتە؛ زارەکە هەڵدە.</div></aside></div>
 <section class="panel keysPanel"><div id="keys" class="keys"></div></section><div id="msg" class="message" aria-live="polite"></div>
+<script src="wordlist.js"></script>
 <script>
-(()=>{const r=document.getElementById('sg41');if(r.dataset.ready)return;r.dataset.ready='1';const A=['ئـ','ا','ب','پ','ت','ج','چ','ح','خ','د','ر','ڕ','ز','ژ','س','ش','ع','غ','ف','ڤ','ق','ک','گ','ل','ڵ','م','ن','و','ۆ','ه','ە','ی','ێ'],P=['.',',','!','؟',';',':','"',"'",'-','…'],$=x=>r.querySelector(x),e={keys:$('#keys'),hw:$('#hw'),cw:$('#cw'),hs:$('#hs'),cs:$('#cs'),hp:$('#hp'),cp:$('#cp'),die:$('#die'),status:$('#status'),msg:$('#msg'),n:$('#new'),u:$('#undo'),ro:$('#roll'),en:$('#end')};let s,timer,timeout;const kn=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);function output(el,a,p){el.replaceChildren();a.forEach((x,i)=>{if(x===' '){const z=document.createElement('span');z.className='spaceMark'+(p&&i===a.length-1?' pending':'');z.title='بۆشایی';el.append(z)}else el.append(document.createTextNode(x))});el.scrollTop=el.scrollHeight}function draw(){e.hs.textContent=s.h.length;e.cs.textContent=s.c.length;output(e.hw,s.h,s.turn==='h');output(e.cw,s.c,false);e.hp.classList.toggle('active',s.turn==='h'&&!s.over);e.cp.classList.toggle('active',s.turn==='c'&&!s.over);const can=s.turn==='h'&&s.rolled&&s.used<s.max&&!s.over;e.keys.querySelectorAll('button').forEach(b=>b.disabled=!can);e.ro.disabled=s.turn!=='h'||s.rolled||s.over;e.en.disabled=s.turn!=='h'||!s.rolled||s.over;e.u.disabled=s.turn!=='h'||!s.used||s.over;if(!s.over)e.status.textContent=s.turn==='c'?'نۆرەی کۆمپیوتەرە…':s.rolled?'نۆرەی تۆیە؛ '+kn(s.max-s.used)+' هەڵبژاردە ماوە.':'نۆرەی تۆیە؛ زارەکە بفڕێنە.'}function reset(){clearInterval(timer);clearTimeout(timeout);s={h:[],c:[],turn:'h',rolled:false,max:0,used:0,over:false};e.die.textContent='؟';e.msg.textContent='';draw()}function win(w){if(s[w].length<50)return false;s.over=true;e.status.textContent='یارییەکە تەواو بوو.';e.msg.textContent=w==='h'?'پیرۆزە! مرۆڤ بردییەوە.':'کۆمپیوتەر بردییەوە.';draw();return true}function pick(x){if(s.turn!=='h'||!s.rolled||s.used>=s.max||s.over)return;s.h.push(x);s.used++;e.msg.textContent=x===' '?'بۆشایی هەڵبژێردرا.':'';if(!win('h'))draw()}function computer(){if(s.over)return;const d=1+Math.floor(Math.random()*6),pool=[...A,...A,...P,' ',' '];let i=0;e.die.textContent=kn(d);timer=setInterval(()=>{if(s.over){clearInterval(timer);return}s.c.push(pool[Math.floor(Math.random()*pool.length)]);i++;draw();if(win('c')){clearInterval(timer);return}if(i===d){clearInterval(timer);timeout=setTimeout(()=>{s.turn='h';s.rolled=false;s.max=s.used=0;e.die.textContent='؟';draw()},280)}},130)}[...A,...P].forEach(x=>{const b=document.createElement('button');b.type='button';b.className='key';b.textContent=x;b.setAttribute('aria-label',x);b.addEventListener('click',()=>pick(x));e.keys.append(b)});const sp=document.createElement('button');sp.type='button';sp.className='key spaceKey';sp.textContent='SP';sp.title='بۆشایی';sp.setAttribute('aria-label','بۆشایی');sp.addEventListener('click',()=>pick(' '));e.keys.append(sp);e.n.addEventListener('click',reset);e.ro.addEventListener('click',()=>{if(s.rolled||s.turn!=='h'||s.over)return;s.max=1+Math.floor(Math.random()*6);s.used=0;s.rolled=true;e.die.textContent=kn(s.max);draw()});e.u.addEventListener('click',()=>{if(!s.used||s.turn!=='h'||s.over)return;s.h.pop();s.used--;draw()});e.en.addEventListener('click',()=>{if(!s.rolled||s.turn!=='h'||s.over)return;s.turn='c';s.rolled=false;s.used=s.max=0;draw();timeout=setTimeout(computer,280)});reset()})();
+(()=>{
+  const r=document.getElementById('sg41');
+  if(r.dataset.ready)return;
+  r.dataset.ready='1';
+  const A=['ئـ','ا','ب','پ','ت','ج','چ','ح','خ','د','ر','ڕ','ز','ژ','س','ش','ع','غ','ف','ڤ','ق','ک','گ','ل','ڵ','م','ن','و','ۆ','ه','ە','ی','ێ'],P=['.',',','!','؟',';',':','"',"'",'-','…'];
+  const $=x=>r.querySelector(x),e={keys:$('#keys'),hw:$('#hw'),cw:$('#cw'),hs:$('#hs'),cs:$('#cs'),hp:$('#hp'),cp:$('#cp'),die:$('#die'),status:$('#status'),msg:$('#msg'),n:$('#new'),u:$('#undo'),ro:$('#roll'),en:$('#end')};
+  const words=window.WUSANE_WORDS;
+  if(!Array.isArray(words)||!words.length){
+    e.ro.disabled=true;
+    e.status.textContent='لیستی ووشەکان کێشەی هەیە.';
+    console.error('The word list could not be loaded or is empty.');
+    return;
+  }
+  let s,timer,timeout;
+  const kn=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+  function output(el,a,p){
+    el.replaceChildren();
+    a.forEach((x,i)=>{
+      if(x===' '){
+        const z=document.createElement('span');
+        z.className='spaceMark'+(p&&i===a.length-1?' pending':'');
+        z.title='بۆشایی';
+        el.append(z);
+      }else el.append(document.createTextNode(x));
+    });
+    el.scrollTop=el.scrollHeight;
+  }
+  function draw(){
+    e.hs.textContent=s.h.length;e.cs.textContent=s.c.length;
+    output(e.hw,s.h,s.turn==='h');output(e.cw,s.c,false);
+    e.hp.classList.toggle('active',s.turn==='h'&&!s.over);e.cp.classList.toggle('active',s.turn==='c'&&!s.over);
+    const can=s.turn==='h'&&s.rolled&&s.used<s.max&&!s.over;
+    e.keys.querySelectorAll('button').forEach(b=>b.disabled=!can);
+    e.ro.disabled=s.turn!=='h'||s.rolled||s.over;e.en.disabled=s.turn!=='h'||!s.rolled||s.over;e.u.disabled=s.turn!=='h'||!s.used||s.over;
+    if(!s.over)e.status.textContent=s.turn==='c'?' کۆمپیوتەر…':s.rolled?'نۆرەتە؛'+kn(s.max-s.used)+' هەڵبژاردنت ماوە.':'نۆرەتە؛ زارەکە هەڵدە.';
+  }
+  function reset(){
+    clearInterval(timer);clearTimeout(timeout);
+    s={h:[],c:[],turn:'h',rolled:false,max:0,used:0,over:false,queue:[],sentenceWords:0,sentenceTarget:3+Math.floor(Math.random()*3)};
+    e.die.textContent='؟';e.msg.textContent='';draw();
+  }
+  function win(w){
+    if(s[w].length<50)return false;
+    s.over=true;e.status.textContent='گەمەکە تەواو بوو.';
+    e.msg.textContent=w==='h'?'پیرۆزە! مرۆڤ بردییەوە.':'کۆمپیوتەر بردییەوە.';
+    draw();return true;
+  }
+  function pick(x){
+    if(s.turn!=='h'||!s.rolled||s.used>=s.max||s.over)return;
+    s.h.push(x);s.used++;e.msg.textContent=x===' '?'بۆشایی هەڵبژێردرا.':'';
+    if(!win('h'))draw();
+  }
+  function nextComputerCharacter(){
+    if(!s.queue.length){
+      const word=words[Math.floor(Math.random()*words.length)];
+      s.sentenceWords++;
+      let suffix=' ';
+      if(s.sentenceWords===s.sentenceTarget){
+        const endings=['.','!','؟'];
+        suffix=endings[Math.floor(Math.random()*endings.length)]+' ';
+        s.sentenceWords=0;s.sentenceTarget=3+Math.floor(Math.random()*3);
+      }
+      s.queue=Array.from(word+suffix);
+    }
+    return s.queue.shift();
+  }
+  function computer(){
+    if(s.over)return;
+    const d=1+Math.floor(Math.random()*6);
+    let i=0;e.die.textContent=kn(d);
+    timer=setInterval(()=>{
+      if(s.over){clearInterval(timer);return}
+      s.c.push(nextComputerCharacter());i++;draw();
+      if(win('c')){clearInterval(timer);return}
+      if(i===d){
+        clearInterval(timer);
+        timeout=setTimeout(()=>{s.turn='h';s.rolled=false;s.max=s.used=0;e.die.textContent='؟';draw()},280);
+      }
+    },130);
+  }
+  [...A,...P].forEach(x=>{
+    const b=document.createElement('button');b.type='button';b.className='key';b.textContent=x;b.setAttribute('aria-label',x);
+    b.addEventListener('click',()=>pick(x));e.keys.append(b);
+  });
+  const sp=document.createElement('button');sp.type='button';sp.className='key spaceKey';sp.textContent='SP';sp.title='بۆشایی';sp.setAttribute('aria-label','بۆشایی');
+  sp.addEventListener('click',()=>pick(' '));e.keys.append(sp);
+  e.n.addEventListener('click',reset);
+  e.ro.addEventListener('click',()=>{if(s.rolled||s.turn!=='h'||s.over)return;s.max=1+Math.floor(Math.random()*6);s.used=0;s.rolled=true;e.die.textContent=kn(s.max);draw()});
+  e.u.addEventListener('click',()=>{if(!s.used||s.turn!=='h'||s.over)return;s.h.pop();s.used--;draw()});
+  e.en.addEventListener('click',()=>{if(!s.rolled||s.turn!=='h'||s.over)return;s.turn='c';s.rolled=false;s.used=s.max=0;draw();timeout=setTimeout(computer,280)});
+  reset();
+})();
 </script>
 </div>
 </body>

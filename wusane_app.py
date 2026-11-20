@@ -30,4 +30,9 @@ st.markdown(
 
 html_path = Path(__file__).with_name("ووشانێ.html")
 game_html = html_path.read_text(encoding="utf-8")
+wordlist_script = '<script src="wordlist.js"></script>'
+if wordlist_script not in game_html:
+    raise ValueError("The game HTML does not contain the word-list script.")
+wordlist_js = html_path.with_name("wordlist.js").read_text(encoding="utf-8")
+game_html = game_html.replace(wordlist_script, f"<script>{wordlist_js}</script>", 1)
 components.html(game_html, height=780, scrolling=True)
