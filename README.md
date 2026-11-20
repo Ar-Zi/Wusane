@@ -4,8 +4,8 @@ A Sorani Kurdish letter-building dice game for one human player against the comp
 
 ## Files
 
-- `app.py` - Streamlit entry point
-- `game.html` - complete HTML, CSS, and JavaScript game
+- `wusane_app.py` - Streamlit entry point
+- `ووشانێ.html` - complete HTML, CSS, and JavaScript game
 - `requirements.txt` - Python dependency list
 - `.streamlit/config.toml` - Streamlit theme and server settings
 - `.gitignore` - files Git should ignore
@@ -33,7 +33,10 @@ A Sorani Kurdish letter-building dice game for one human player against the comp
 
 5. Start the app:
 
-       streamlit run app.py
+       streamlit run wusane_app.py
+
+The layout adapts to narrow and wide screens. On short screens, scroll the page to
+reach all controls.
 
 ## Push to a private GitHub repository
 
@@ -52,7 +55,7 @@ Do not add API keys or passwords to this repository.
 
 1. Push the project to GitHub.
 2. In Streamlit Community Cloud, create a new app.
-3. Select the private repository and `app.py` as the entry point.
+3. Select the private repository and `wusane_app.py` as the entry point.
 4. Deploy.
 
 The game runs in the browser. Game state resets when the page is refreshed.
